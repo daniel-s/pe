@@ -1,0 +1,25 @@
+type,name,revenue_percentage,daily_fee,vpp_name,nmi,address,manufacturer,serial_num,capacity
+vpp,Bellossom,0.4,1,,,,,,
+vpp,Marill,0.5,0.5,,,,,,
+vpp,Azumarill,0.6,0.2,,,,,,
+site,,,,Bellossom,uWdwD8wCpo0,Site_1,,,
+site,,,,Marill,U4uW6MvCYNH,Site_2,,,
+site,,,,Bellossom,8IwX63aI9GR,Site_3,,,
+site,,,,Marill,9ubOR1tXZNC,Site_4,,,
+site,,,,Azumarill,42LE5Dvx1q,Site_5,,,
+site,,,,Bellossom,gszKIIEQAg,Site_6,,,
+site,,,,Azumarill,PrTWMpmIAVt,Site_7,,,
+battery,,,,,uWdwD8wCpo0,,Aperture Science,100,100
+battery,,,,,U4uW6MvCYNH,,Aperture Science,101,150
+battery,,,,,8IwX63aI9GR,,Aperture Science,102,200
+battery,,,,,9ubOR1tXZNC,,Aperture Science,103,100
+battery,,,,,42LE5Dvx1q,,Union Aerospace,104,150
+battery,,,,,gszKIIEQAg,,Union Aerospace,105,200
+battery,,,,,PrTWMpmIAVt,,Union Aerospace,106,100
+battery,,,,,uWdwD8wCpo0,,Union Aerospace,107,150
+battery,,,,,U4uW6MvCYNH,,Union Aerospace,108,200
+battery,,,,,8IwX63aI9GR,,Versalife,109,100
+battery,,,,,9ubOR1tXZNC,,Versalife,110,150
+battery,,,,,42LE5Dvx1q,,Versalife,111,200
+battery,,,,,gszKIIEQAg,,Versalife,112,100
+battery,,,,,PrTWMpmIAVt,,Versalife,113,150

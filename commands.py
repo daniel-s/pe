@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 import decimal
+
+import pandas as pd
 
 # Records to represent the objects of this problem.
 class Vpp:
@@ -12,20 +13,26 @@ class Vpp:
 
     def __str__(self):
         return f"VPP name: {self.name}, percent: {self.revenue_percentage}, fee: {self.daily_fee}"
+    
+    def __repr__(self):
+        return self.__str__()
 
 class Site:
     def __init__(self, vpp_name, nmi, address):
         self.vpp_name = vpp_name
-        self.nmi = nmi
+        self.nmi = nmi.lower()
         self.address = address
 
     def __str__(self):
         return f"Site VPP: {self.vpp_name}, nmi: {self.nmi}, address: {self.address}"
 
+    def __repr__(self):
+        return self.__str__()
+
 class Battery:
     def __init__(self, nmi, manufacturer, serial_num, capacity):
-        self.nmi = nmi
-        self.manufacturer = manufacturer,
+        self.nmi = nmi.lower()
+        self.manufacturer = manufacturer
         self.serial_num = serial_num
         self.capacity = float(capacity)
 
@@ -34,6 +41,9 @@ class Battery:
                 f"manufacturer: {self.manufacturer}, "
                 f"serial_num: {self.serial_num}, "
                 f"capacity: {self.capacity}")
+
+    def __repr__(self):
+        return self.__str__()
 
 # Objects stored in lists below.
 VPPS = []
@@ -95,6 +105,45 @@ def create_battery(nmi, manufacturer, serial_num, capacity):
     _append_new_object(next_battery, BATTERIES, BATTERY_RULES)
     
 def import_events(filename):
-    pass
+    df = pd.read_csv(filename)
+
+def _populate_objects(filename):
+    df = pd.read_csv(filename, dtype={
+        "revenue_percentage": "string",
+        "daily_fee": "string",
+        "serial_num": "string",
+        "capacity": "string"
+    })
+    # Populate each object, use "type" column to dispach
+    for _, row in df.iterrows():
+        type_name = row["type"]
+        if type_name == "vpp":
+            create_vpp(name=row["name"],
+                       revenue_percentage=row["revenue_percentage"],
+                       daily_fee=row["daily_fee"])
+        elif type_name == "site":
+            create_site(vpp_name=row["vpp_name"],
+                        nmi=row["nmi"],
+                        address=row["address"])
+        elif type_name == "battery":
+            create_battery(nmi=row["nmi"],
+                           manufacturer=row["manufacturer"],
+                           serial_num=row["serial_num"],
+                           capacity=row["capacity"])
+        else:
+            raise Exception(f"Unknown object type encountered during setup:\n {row}")
+    
 def create_report(vpp_name, year_month):
+    # The VPP gets its daily rate first.
+
+    # The VPP gets its first slice according to its own percentage value.
+
+    # Each site gets 80% directly.
+
+    # Each site gets the remaining amount by proportion of its battery.
     pass
+
+if __name__ == "__main__":
+    _populate_objects("test_objects.csv")
+    for obj in VPPS + SITES + BATTERIES:
+        print(obj)
