@@ -205,6 +205,7 @@ def create_report(vpp_name, year_month):
     # VPP proportion of fees
     df["fees"] = df["energy"] * df["tarif"]
     df["fee_to_vpp"] = df["fees"] * vpp.revenue_percentage
+    vpp_proportion_total = df["fee_to_vpp"].sum()
 
     # Each site gets 80% directly.
     df["fee_direct_to_site"] = (df["fees"] - df["fee_to_vpp"]) * .8
@@ -245,6 +246,7 @@ def create_report(vpp_name, year_month):
     results = {
         "name": vpp_name,
         "daily_fee_for_month": f"{round(vpp_daily_fee, 4)}",
+        "vpp_charge_for_month": f"{round(vpp_proportion_total, 4)}",
         "sites": site_results
     }
     return results
