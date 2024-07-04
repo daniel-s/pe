@@ -61,11 +61,12 @@ SITE_RULES = []
 BATTERY_RULES = []
 
 
-# Error checking happens in the create functions.
-def create_vpp(name, revenue_percentage, daily_fee):
-    next_vpp = Vpp(name, revenue_percentage, daily_fee)
-    # Execute rules to check VPP.
-    results = [rule(next_vpp) for rule in VPP_RULES]
+def _append_new_object(obj, collection, rules):
+    """
+    Verify and add a new record to our collection.
+    """
+    # Execute rules to check object.
+    results = [rule(obj) for rule in rules]
     failures = list(filter(lambda x: x[0] == False, results))
     # Exception if there were problems creating a VPP.
     is_failed_results = len(failures) > 0
@@ -73,17 +74,26 @@ def create_vpp(name, revenue_percentage, daily_fee):
         # Combine failed results into error message.
         failure_messages = [failure[1] for failure in failures]
         messages = "\n".join(failure_messages)
-        raise Exception(f"Problem(s) found creating new VPP: {next_vpp}\n\n"
+        raise Exception(f"Problem(s) found creating new VPP: {obj}\n\n"
                         f"Rule violations:"
                         f"\n{messages}")
     else:
         # Append good VPP to our collection.
-        VPPS.append(next_vpp)
+        collection.append(obj)
+
+# Error checking happens in the create functions.
+def create_vpp(name, revenue_percentage, daily_fee):
+    next_vpp = Vpp(name, revenue_percentage, daily_fee)
+    _append_new_object(next_vpp, VPPS, VPP_RULES)
         
 def create_site(vpp_name, nmi, address):
-    pass
+    next_site = Site(vpp_name, nmi, address)
+    _append_new_object(next_site, SITES, SITE_RULES)
+    
 def create_battery(nmi, manufacturer, serial_num, capacity):
-    pass
+    next_battery = Battery(nmi, manufacturer, serial_num, capacity)
+    _append_new_object(next_battery, BATTERIES, BATTERY_RULES)
+    
 def import_events(filename):
     pass
 def create_report(vpp_name, year_month):
