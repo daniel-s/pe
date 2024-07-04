@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import decimal
+
 # Records to represent the objects of this problem.
 class Vpp:
     def __init__(self, name, revenue_percentage, daily_fee):        
         self.name = name
         self.revenue_percentage = float(revenue_percentage)
-        self.daily_fee = int(daily_fee)
+        self.daily_fee = decimal.Decimal(daily_fee)
 
     def __str__(self):
-        return f"VPP name: {self.name}, %: {self.revenue_percentage}, fee: {self.daily_fee}"
+        return f"VPP name: {self.name}, percent: {self.revenue_percentage}, fee: {self.daily_fee}"
 
 class Site:
     def __init__(self, vpp_name, nmi, address):
@@ -38,9 +40,46 @@ VPPS = []
 SITES = []
 BATTERIES = []
 
+"""
+A rule returns a tuple (bool, message). Pass/fail and
+error message for the failed rule.
+"""
+
+def vpp_percentage_is_sensible(vpp):
+    """
+    Confirms VPP revenue share between 0% and 100%.
+    """
+    percent_too_low = vpp.revenue_percentage < 0.0
+    percent_too_high = vpp.revenue_percentage > 1.0
+    if percent_too_low or percent_too_high:
+        return (False, f"VPP revenue percentage not sensible: {vpp.revenue_percentage}")
+    else:
+        return (True, "")
+
+VPP_RULES = [vpp_percentage_is_sensible]
+SITE_RULES = []
+BATTERY_RULES = []
+
+
 # Error checking happens in the create functions.
 def create_vpp(name, revenue_percentage, daily_fee):
-    pass
+    next_vpp = Vpp(name, revenue_percentage, daily_fee)
+    # Execute rules to check VPP.
+    results = [rule(next_vpp) for rule in VPP_RULES]
+    failures = list(filter(lambda x: x[0] == False, results))
+    # Exception if there were problems creating a VPP.
+    is_failed_results = len(failures) > 0
+    if is_failed_results:
+        # Combine failed results into error message.
+        failure_messages = [failure[1] for failure in failures]
+        messages = "\n".join(failure_messages)
+        raise Exception(f"Problem(s) found creating new VPP: {next_vpp}\n\n"
+                        f"Rule violations:"
+                        f"\n{messages}")
+    else:
+        # Append good VPP to our collection.
+        VPPS.append(next_vpp)
+        
 def create_site(vpp_name, nmi, address):
     pass
 def create_battery(nmi, manufacturer, serial_num, capacity):
